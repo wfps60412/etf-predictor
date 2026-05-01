@@ -34,10 +34,38 @@ def _save_ids(ids):
         json.dump(ids, f, ensure_ascii=False, indent=2)
 
 def _get_service():
+    from googleapiclient.discovery import build
+
+    # ── 優先 1：Streamlit Secrets 裡的 Service Account JSON ──────
+    try:
+        import streamlit as st
+        if "google" in st.secrets and "service_account" in st.secrets["google"]:
+            import json as _json
+            from google.oauth2 import service_account
+            sa_info = _json.loads(st.secrets["google"]["service_account"])
+            creds   = service_account.Credentials.from_service_account_info(
+                sa_info,
+                scopes=["https://www.googleapis.com/auth/drive"]
+            )
+            return build("drive", "v3", credentials=creds)
+    except Exception:
+        pass
+
+    # ── 優先 2：本地 service_account.json ───────────────────────
+    sa_path = os.path.join(_SCRIPT_DIR, "service_account.json")
+    if os.path.exists(sa_path):
+        from google.oauth2 import service_account
+        creds = service_account.Credentials.from_service_account_file(
+            sa_path,
+            scopes=["https://www.googleapis.com/auth/drive"]
+        )
+        return build("drive", "v3", credentials=creds)
+
+    # ── 備用：OAuth token（本地開發，需要瀏覽器）────────────────
     from google.oauth2.credentials import Credentials
     from google_auth_oauthlib.flow import InstalledAppFlow
     from google.auth.transport.requests import Request
-    from googleapiclient.discovery import build
+
     creds = None
     if os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
@@ -46,11 +74,16 @@ def _get_service():
             creds.refresh(Request())
         else:
             if not os.path.exists(CREDENTIALS_PATH):
-                raise FileNotFoundError("找不到 credentials.json！請至 Google Cloud Console 下載 OAuth 憑證")
+                raise FileNotFoundError(
+                    "找不到授權方式！請選擇其中一種：\n"
+                    "  雲端：在 Streamlit Secrets 填入 service_account JSON\n"
+                    "  本地：放 service_account.json 或 credentials.json 到專案資料夾"
+                )
             flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
             creds = flow.run_local_server(port=0)
         with open(TOKEN_PATH, "w") as f:
             f.write(creds.to_json())
+
     return build("drive", "v3", credentials=creds)
 
 def _upload_one(service, local_path, drive_name, known_ids):
