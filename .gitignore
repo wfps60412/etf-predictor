@@ -1,0 +1,6 @@
+credentials.json
+token.json
+*.json
+*.xlsx
+venv*/
+.DS_Store
