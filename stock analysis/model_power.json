@@ -1,0 +1,209 @@
+{
+  "1210": {
+    "wr_12m": 0.7,
+    "wr_avg": 0.5533,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "1210 大成",
+    "industry": "食品飼料",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "1216": {
+    "wr_12m": 0.37,
+    "wr_avg": 0.5133,
+    "tier": "LOW",
+    "stars": "★☆☆☆☆",
+    "name": "1216 統一",
+    "industry": "食品飼料",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "1513": {
+    "wr_12m": 0.71,
+    "wr_avg": 0.63,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "1513 中興電",
+    "industry": "工程電機",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2323": {
+    "wr_12m": 0.59,
+    "wr_avg": 0.5667,
+    "tier": "MID",
+    "stars": "★★★☆☆",
+    "name": "2323 中環",
+    "industry": "光儲存",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2353": {
+    "wr_12m": 0.68,
+    "wr_avg": 0.5633,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2353 宏碁",
+    "industry": "電腦周邊",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2374": {
+    "wr_12m": 0.52,
+    "wr_avg": 0.52,
+    "tier": "LOW",
+    "stars": "★★☆☆☆",
+    "name": "2374 佳能",
+    "industry": "電腦周邊",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2376": {
+    "wr_12m": 0.62,
+    "wr_avg": 0.6067,
+    "tier": "MID",
+    "stars": "★★★☆☆",
+    "name": "2376 技嘉",
+    "industry": "電腦周邊",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2409": {
+    "wr_12m": 0.77,
+    "wr_avg": 0.7233,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2409 友達",
+    "industry": "面板",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "3374": {
+    "wr_12m": 0.8,
+    "wr_avg": 0.6567,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "3374 精材",
+    "industry": "半導體封測",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "3481": {
+    "wr_12m": 0.72,
+    "wr_avg": 0.5433,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "3481 群創",
+    "industry": "面板",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "4904": {
+    "wr_12m": 0.89,
+    "wr_avg": 0.71,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "4904 遠傳",
+    "industry": "電信",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "6477": {
+    "wr_12m": 0.35,
+    "wr_avg": 0.4067,
+    "tier": "LOW",
+    "stars": "★☆☆☆☆",
+    "name": "6477 安集",
+    "industry": "半導體封測",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "9914": {
+    "wr_12m": 0.8,
+    "wr_avg": 0.7933,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "9914 美利達",
+    "industry": "自行車",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "9921": {
+    "wr_12m": 0.73,
+    "wr_avg": 0.7767,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "9921 巨大",
+    "industry": "自行車",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "9933": {
+    "wr_12m": 0.43,
+    "wr_avg": 0.53,
+    "tier": "LOW",
+    "stars": "★☆☆☆☆",
+    "name": "9933 中鼎",
+    "industry": "工程電機",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2330": {
+    "wr_12m": 1.0,
+    "wr_avg": 0.91,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "2330 台積電",
+    "industry": "半導體晶圓代工",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2303": {
+    "wr_12m": 0.7,
+    "wr_avg": 0.64,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2303 聯電",
+    "industry": "半導體晶圓代工",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2454": {
+    "wr_12m": 0.92,
+    "wr_avg": 0.78,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "2454 聯發科",
+    "industry": "IC設計",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2882": {
+    "wr_12m": 0.7,
+    "wr_avg": 0.62,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2882 國泰金",
+    "industry": "金融保險",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2603": {
+    "wr_12m": 0.74,
+    "wr_avg": 0.73,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2603 長榮",
+    "industry": "航運",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2317": {
+    "wr_12m": 0.72,
+    "wr_avg": 0.6433,
+    "tier": "HIGH",
+    "stars": "★★★★☆",
+    "name": "2317 鴻海",
+    "industry": "電子零組件",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "2412": {
+    "wr_12m": 0.94,
+    "wr_avg": 0.82,
+    "tier": "HIGH",
+    "stars": "★★★★★",
+    "name": "2412 中華電",
+    "industry": "電信",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  },
+  "1301": {
+    "wr_12m": 0.31,
+    "wr_avg": 0.44,
+    "tier": "LOW",
+    "stars": "★☆☆☆☆",
+    "name": "1301 台塑",
+    "industry": "石化",
+    "updated_at": "AI回測報告_v5_產業別特徵.xlsx"
+  }
+}

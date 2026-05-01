@@ -1,0 +1,12 @@
+-bash: 50: command not found
+Traceback (most recent call last):
+  File "/Users/apple/Downloads/stock analysis/stock analysis.py", line 12, in <module>
+    creds = Credentials.from_service_account_file('service_account.json', scopes=scope)
+  File "/Users/apple/Downloads/chip analysis/venv/lib/python3.9/site-packages/google/oauth2/service_account.py", line 258, in from_service_account_file
+    info, signer = _service_account_info.from_filename(
+  File "/Users/apple/Downloads/chip analysis/venv/lib/python3.9/site-packages/google/auth/_service_account_info.py", line 78, in from_filename
+    with io.open(filename, "r", encoding="utf-8") as json_file:
+FileNotFoundError: [Errno 2] No such file or directory: 'service_account.json'
+/Users/apple/Downloads/chip analysis/venv/bin/python: can't open file '/Users/apple/Downloads/stock analysis/stock analysis.py': [Errno 2] No such file or directory
+/Users/apple/Downloads/chip analysis/venv/bin/python: can't open file '/Users/apple/Downloads/stock analysis/stock analysis.py': [Errno 2] No such file or directory
+/bin/sh: /Users/apple/Downloads/chip analysis/venv/bin/python: No such file or directory
