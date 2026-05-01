@@ -132,27 +132,55 @@ def upload_files(filenames=None):
     print(f"☁️  完成，drive_ids.json 已更新\n")
     return updated
 
-def download_db():
-    known_ids = _load_ids()
-    fid = known_ids.get("ETF歷史分析資料庫.xlsx", "")
-    if not fid:
-        print("ℹ️  無資料庫 Drive ID，跳過下載")
-        return False
+def _download_one(service, drive_name: str, local_path: str) -> bool:
+    """下載單一檔案到指定本地路徑，檔案不存在 Drive 時回傳 False。"""
     import io
     from googleapiclient.http import MediaIoBaseDownload
+    known_ids = _load_ids()
+    fid = known_ids.get(drive_name, "")
+    if not fid:
+        print(f"  ℹ️  {drive_name} 無 Drive ID，跳過")
+        return False
+    try:
+        buf = io.BytesIO()
+        dl  = MediaIoBaseDownload(buf, service.files().get_media(fileId=fid))
+        done = False
+        while not done:
+            _, done = dl.next_chunk()
+        buf.seek(0)
+        os.makedirs(os.path.dirname(os.path.abspath(local_path)), exist_ok=True)
+        with open(local_path, "wb") as f:
+            f.write(buf.read())
+        print(f"  ✅ 下載：{drive_name} → {local_path}")
+        return True
+    except Exception as e:
+        print(f"  ⚠️  {drive_name} 下載失敗：{e}")
+        return False
+
+
+def download_all(dest_dir: str = None):
+    """
+    從 Drive 下載所有報告檔案到 dest_dir。
+    dest_dir 預設為 drive_sync.py 所在目錄（讓 _find() 找得到）。
+    """
+    if dest_dir is None:
+        dest_dir = _SCRIPT_DIR
+    print("☁️  從 Drive 下載所有報告...")
     service = _get_service()
-    buf = io.BytesIO()
-    dl  = MediaIoBaseDownload(buf, service.files().get_media(fileId=fid))
-    done = False
-    while not done:
-        _, done = dl.next_chunk()
-    buf.seek(0)
-    local_path = os.path.join(DATA_DIR, "ETF歷史分析資料庫.xlsx")
-    os.makedirs(DATA_DIR, exist_ok=True)
-    with open(local_path, "wb") as f:
-        f.write(buf.read())
-    print(f"  ✅ 下載完成：{local_path}")
-    return True
+    results = {}
+    for drive_name in SYNC_FILES:
+        local_path = os.path.join(dest_dir, drive_name)
+        results[drive_name] = _download_one(service, drive_name, local_path)
+    ok = sum(results.values())
+    print(f"☁️  下載完成（{ok}/{len(results)} 個成功）")
+    return results
+
+
+def download_db():
+    """向下相容舊呼叫，只下載資料庫。"""
+    service   = _get_service()
+    local_path = os.path.join(_SCRIPT_DIR, "ETF歷史分析資料庫.xlsx")
+    return _download_one(service, "ETF歷史分析資料庫.xlsx", local_path)
 
 def upload_file_path(local_path: str, drive_name: str):
     """

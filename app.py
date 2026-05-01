@@ -25,18 +25,21 @@ BT_REPORT   = _find("ETF回測報告_v2.xlsx")
 PRED_REPORT = _find("ETF預測報告_v2.xlsx")
 POWER_JSON  = _find("etf_model_power.json")
 
-# ── 啟動時從 Drive 同步資料庫（雲端部署用）─────────────────────
+# ── 啟動時從 Drive 下載所有報告（雲端部署用）───────────────────
 @st.cache_resource
-def init_db():
+def init_from_drive():
+    """app 第一次啟動時執行，把 Drive 上的所有報告下載到 app 旁邊。"""
     try:
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from drive_sync import download_db
-        if download_db():
-            st.toast("✅ 已從 Drive 下載最新資料庫")
+        from drive_sync import download_all
+        results = download_all(dest_dir=os.path.dirname(os.path.abspath(__file__)))
+        ok = sum(results.values())
+        if ok > 0:
+            st.toast(f"✅ 已從 Drive 下載 {ok} 個檔案")
     except Exception:
         pass  # 本地執行或 Drive 未設定時靜默跳過
 
-init_db()
+init_from_drive()
 
 st.set_page_config(
     page_title="📊 ETF 投資分析",
