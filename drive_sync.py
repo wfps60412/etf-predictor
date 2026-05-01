@@ -34,55 +34,56 @@ def _save_ids(ids):
         json.dump(ids, f, ensure_ascii=False, indent=2)
 
 def _get_service():
+    """
+    授權優先順序：
+    1. Streamlit Secrets 的 token JSON（雲端部署，用 refresh_token 自動換 token）
+    2. 本地 token.json（本地開發）
+    3. 本地 credentials.json + 瀏覽器授權（第一次本地設定用）
+    """
     from googleapiclient.discovery import build
-
-    # ── 優先 1：Streamlit Secrets 裡的 Service Account JSON ──────
-    try:
-        import streamlit as st
-        if "google" in st.secrets and "service_account" in st.secrets["google"]:
-            import json as _json
-            from google.oauth2 import service_account
-            sa_info = _json.loads(st.secrets["google"]["service_account"])
-            creds   = service_account.Credentials.from_service_account_info(
-                sa_info,
-                scopes=["https://www.googleapis.com/auth/drive"]
-            )
-            return build("drive", "v3", credentials=creds)
-    except Exception:
-        pass
-
-    # ── 優先 2：本地 service_account.json ───────────────────────
-    sa_path = os.path.join(_SCRIPT_DIR, "service_account.json")
-    if os.path.exists(sa_path):
-        from google.oauth2 import service_account
-        creds = service_account.Credentials.from_service_account_file(
-            sa_path,
-            scopes=["https://www.googleapis.com/auth/drive"]
-        )
-        return build("drive", "v3", credentials=creds)
-
-    # ── 備用：OAuth token（本地開發，需要瀏覽器）────────────────
     from google.oauth2.credentials import Credentials
-    from google_auth_oauthlib.flow import InstalledAppFlow
     from google.auth.transport.requests import Request
 
     creds = None
+
+    # ── 優先：環境變數 GOOGLE_TOKEN（Streamlit Secrets 頂層設定）
+    # Streamlit Cloud 會把頂層 Secrets 自動轉成環境變數，
+    # subprocess 呼叫的子 process 也能讀到
+    raw_token = os.environ.get("GOOGLE_TOKEN", "")
+    if raw_token:
+        try:
+            import json as _json
+            token_info = _json.loads(raw_token)
+            creds = Credentials.from_authorized_user_info(token_info, SCOPES)
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            if creds and creds.valid:
+                print("  [drive] ✅ 使用環境變數 token 授權成功")
+                return build("drive", "v3", credentials=creds)
+        except Exception as e:
+            print(f"  [drive] 環境變數 token 解析失敗：{e}")
+
+    # ── 備用：本地 token.json ────────────────────────────────────
     if os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
+            # 第一次本地授權（只需要跑一次，之後用 token.json）
+            from google_auth_oauthlib.flow import InstalledAppFlow
             if not os.path.exists(CREDENTIALS_PATH):
                 raise FileNotFoundError(
-                    "找不到授權方式！請選擇其中一種：\n"
-                    "  雲端：在 Streamlit Secrets 填入 service_account JSON\n"
-                    "  本地：放 service_account.json 或 credentials.json 到專案資料夾"
+                    "找不到授權資訊！\n"
+                    "雲端：在 Streamlit Secrets [google] 填入 token（見說明）\n"
+                    "本地：放 credentials.json 到專案資料夾，執行一次授權"
                 )
             flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
             creds = flow.run_local_server(port=0)
-        with open(TOKEN_PATH, "w") as f:
-            f.write(creds.to_json())
+        # 更新本地 token
+        with open(TOKEN_PATH, "w") as tf:
+            tf.write(creds.to_json())
 
     return build("drive", "v3", credentials=creds)
 
