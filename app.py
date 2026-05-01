@@ -25,6 +25,19 @@ BT_REPORT   = _find("ETF回測報告_v2.xlsx")
 PRED_REPORT = _find("ETF預測報告_v2.xlsx")
 POWER_JSON  = _find("etf_model_power.json")
 
+# ── 啟動時從 Drive 同步資料庫（雲端部署用）─────────────────────
+@st.cache_resource
+def init_db():
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from drive_sync import download_db
+        if download_db():
+            st.toast("✅ 已從 Drive 下載最新資料庫")
+    except Exception:
+        pass  # 本地執行或 Drive 未設定時靜默跳過
+
+init_db()
+
 st.set_page_config(
     page_title="📊 ETF 投資分析",
     layout="wide",
@@ -57,7 +70,9 @@ def show_file_status(label, path):
 
 def run_script(script_name: str, args: list = None):
     """執行腳本並即時串流輸出"""
-    script_path = os.path.join(os.path.dirname(__file__), script_name)
+    # 永遠用 app.py 所在目錄找腳本，本地和雲端都能正確解析
+    app_dir     = os.path.dirname(os.path.abspath(__file__))
+    script_path = os.path.join(app_dir, script_name)
     cmd = [sys.executable, script_path] + (args or [])
     output_lines = []
     placeholder  = st.empty()
@@ -156,18 +171,24 @@ with tab_backtest:
     **回測完成後：** 自動上傳報告到 Google Drive，並更新 etf_model_power.json
     """)
 
+    # 偵測是否在 Streamlit Cloud（雲端記憶體不足以跑回測）
+    is_cloud = os.environ.get("STREAMLIT_SHARING_MODE") == "streamlit_sharing" \
+               or os.environ.get("HOME", "") == "/home/appuser"
+
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("▶️ 執行 ETF 回測", key="btn_backtest"):
-            with st.status("正在執行回測（需時 10~30 分鐘）...", expanded=True) as status:
-                success, _ = run_script("etf_backtester.py")
-                if success:
-                    # 回測完後上傳報告和 power.json
-                    drive_upload(["ETF回測報告_v2.xlsx", "etf_model_power.json"])
-                    status.update(label="✅ 回測完成！報告已同步至 Drive",
-                                  state="complete", expanded=False)
-                else:
-                    status.update(label="❌ 回測失敗", state="error")
+        if is_cloud:
+            st.info("☁️ 雲端環境記憶體不足以執行回測（需 4~8GB）\n\n請在**本地電腦**執行：\n```\npython etf_backtester.py\n```\n完成後報告會自動上傳到 Drive，這裡可直接查看。")
+        else:
+            if st.button("▶️ 執行 ETF 回測", key="btn_backtest"):
+                with st.status("正在執行回測（需時 10~30 分鐘）...", expanded=True) as status:
+                    success, _ = run_script("etf_backtester.py")
+                    if success:
+                        drive_upload(["ETF回測報告_v2.xlsx", "etf_model_power.json"])
+                        status.update(label="✅ 回測完成！報告已同步至 Drive",
+                                      state="complete", expanded=False)
+                    else:
+                        status.update(label="❌ 回測失敗", state="error")
     with col2:
         if os.path.exists(BT_REPORT):
             with open(BT_REPORT, "rb") as f:
